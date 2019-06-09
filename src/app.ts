@@ -1,4 +1,5 @@
 import * as express from 'express';
+import { errorMiddleware } from "./middlewares/error.middleware";
 import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import  PostController  from "./posts/post.controller";
@@ -13,6 +14,7 @@ class App {
         this.connectToDatabase();
         this.initializeMiddlewares();
         this.initializeControllers();
+        this.initializeErrorHandling();
     }
 
     public getInstance() : express.Application {
@@ -40,6 +42,10 @@ class App {
             if(err) throw err;
             console.log(`Database is connected!`);
         });
+    }
+
+    private initializeErrorHandling() : void {
+        this.app.use(errorMiddleware);
     }
 }
 export default App;

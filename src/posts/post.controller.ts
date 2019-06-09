@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction , Router } from 'express';
+import PostNotFoundException from '../exceptions/PostNotFoundException';
 import postModel from './post.model';
 import Post from './post.interface';
 import Controller from 'interfaces/controller.interface';
@@ -17,6 +18,8 @@ class PostController implements Controller {
 
         this.router.route(`${this.path}/:id`)
             .get(this.getPostById) //get by ID
+            .patch(this.modifyPost)
+            .delete(this.removePost);
     }
     getPosts = (request: Request, response: Response) => {
         postModel.find()
@@ -40,8 +43,32 @@ class PostController implements Controller {
           if (post) {
             res.send(post);
           } else {
-            next('Post not found!');
+            next(new PostNotFoundException(id));
           }
+        });
+    }
+
+    modifyPost = (req : Request, res : Response, next : NextFunction) : void => {
+        const id = req.params.id;
+        let postData : Post = req.body;
+        postModel.findByIdAndUpdate(id, postData, {new : true})
+            .then(post=>{
+                if(post) {
+                    res.send(post);
+                }else {
+                    next(new PostNotFoundException(id));
+                }
+            });
+    }
+    removePost = (req : Request, res : Response, next : NextFunction) : void => {
+        const id = req.params.id;
+        postModel.findByIdAndDelete(id)
+        .then(post=>{
+            if(post) {
+                res.send(200);
+            }else {
+                next(new PostNotFoundException(id));
+            }
         });
     }
     public getRouter() : Router {
