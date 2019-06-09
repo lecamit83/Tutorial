@@ -13,6 +13,10 @@ class PostController implements Controller {
         this.router.route(this.path)
             .get(this.getPosts)
             .post(this.createPost);
+        
+
+        this.router.route(`${this.path}/:id`)
+            .get(this.getPostById) //get by ID
     }
     getPosts = (request: Request, response: Response) => {
         postModel.find()
@@ -27,6 +31,18 @@ class PostController implements Controller {
             .then(savedPost => {
                 response.send(savedPost);
             })
+    }
+
+    getPostById = (req : Request, res : Response, next: NextFunction) => {
+        const id = req.params.id;
+        postModel.findById(id)
+        .then((post) => {
+          if (post) {
+            res.send(post);
+          } else {
+            next('Post not found!');
+          }
+        });
     }
     public getRouter() : Router {
         return this.router;
