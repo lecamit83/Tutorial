@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction , Router } from 'express';
+import { validationMiddleware } from "./../middlewares/validation.middleware";
 import PostNotFoundException from '../exceptions/PostNotFoundException';
 import postModel from './post.model';
 import Post from './post.interface';
 import Controller from 'interfaces/controller.interface';
+import PostDTO from './post.dto';
 class PostController implements Controller {
     public path : string = '/post';
     public router : Router;
@@ -13,12 +15,12 @@ class PostController implements Controller {
     private intializeRoutes() : void {
         this.router.route(this.path)
             .get(this.getPosts)
-            .post(this.createPost);
+            .post(validationMiddleware(PostDTO),this.createPost);
         
 
         this.router.route(`${this.path}/:id`)
             .get(this.getPostById) //get by ID
-            .patch(this.modifyPost)
+            .patch(validationMiddleware(PostDTO, true),this.modifyPost)
             .delete(this.removePost);
     }
     getPosts = (request: Request, response: Response) => {
