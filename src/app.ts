@@ -3,6 +3,7 @@ import { errorMiddleware } from "./middlewares/error.middleware";
 import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import  PostController  from "./posts/post.controller";
+import AuthenticationController from './authentication/authentication.controller';
 import { MongoError } from 'mongodb';
 
 
@@ -28,6 +29,7 @@ class App {
     
     private initializeControllers() : void {
         this.app.use('/api', new PostController().getRouter());
+        this.app.use('/api', new AuthenticationController().getRouter());
     }
     private connectToDatabase() {
         const {
