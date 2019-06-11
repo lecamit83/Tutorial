@@ -5,5 +5,6 @@ export function validateEnvironment() : void {
         MONGO_PASSWORD : str(),
         MONGO_PATH : str(),
         PORT : port(),
+        JWT_SECRET : str()
     });
 }

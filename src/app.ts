@@ -1,10 +1,13 @@
 import * as express from 'express';
-import { errorMiddleware } from "./middlewares/error.middleware";
+
+import * as cookieParser from 'cookie-parser';  
 import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import  PostController  from "./posts/post.controller";
 import AuthenticationController from './authentication/authentication.controller';
 import { MongoError } from 'mongodb';
+
+import { errorMiddleware } from "./middlewares/error.middleware";
 
 
 class App {
@@ -25,6 +28,7 @@ class App {
     private initializeMiddlewares() : void {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({extended : true}));
+        this.app.use(cookieParser());
     }
     
     private initializeControllers() : void {
